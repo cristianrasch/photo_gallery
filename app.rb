@@ -9,7 +9,6 @@ class App < Roda
   path :folder do |folder|
     "/#{folder}"
   end
-  # plugin :empty_root
   plugin :render
   opts[:public] = "public/system"
   plugin :assets, css: Dir.chdir("assets/css") { Dir["**/*.css"] },
@@ -22,6 +21,7 @@ class App < Roda
   configure :development do
     plugin :static, Picture.folders.map { |folder| "/#{folder}/" },
                     root: Picture::PUBLIC_DIR
+    plugin :static, %w(/img), root: "assets"
   end
 
   configure :production do

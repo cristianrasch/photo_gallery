@@ -17,6 +17,8 @@ html {
 }
 body {
   margin: 0;
+  background-image: url(/img/dust_scratches.png);
+  padding: 20px 0;
 }
 article,
 aside,
@@ -297,7 +299,7 @@ img {
 /* Gallery */
 .lightboxgallery-gallery {
   display: block;
-  margin: 60px -10px;
+  margin: 10px -10px;
 }
 .lightboxgallery-gallery-item {
   cursor: zoom-in;
