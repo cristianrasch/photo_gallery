@@ -4,7 +4,6 @@ require_relative "../config/initializers/dotenv"
 
 class Picture
   PUBLIC_DIR = Pathname(ENV.fetch("PUBLIC_DIR")).expand_path
-  # PUBLIC_PATH = Pathname("/public")
   EXTENSIONS = ENV.fetch("PHOTO_EXT").split(",").freeze
 
   class << self
