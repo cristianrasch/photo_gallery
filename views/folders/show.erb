@@ -1,0 +1,29 @@
+<div class="container">
+  <div class="lightboxgallery-gallery clearfix">
+
+  <% pictures.each do |picture| %>
+    <a class="lightboxgallery-gallery-item" target="_blank" href="<%= picture.path %>" data-title="" data-alt="" data-desc="">
+      <div>
+        <img src="<%= picture.thumb_fname %>" title="" alt="">
+        <div class="lightboxgallery-gallery-item-content">
+          <span class="lightboxgallery-gallery-item-title"></span>
+        </div>
+      </div>
+    </a>
+  <% end %>
+</div>
+
+
+<% content_for :js do %>
+  <script type="text/javascript">
+    $(document).on('click', '.lightboxgallery-gallery-item', function(event) {
+      event.preventDefault();
+
+      $(this).lightboxgallery({
+        showCounter: true,
+        showTitle: false,
+        showDescription: false
+      });
+    });
+  </script>
+<% end %>
