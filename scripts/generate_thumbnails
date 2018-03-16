@@ -23,12 +23,14 @@ Picture::EXTENSIONS.each do |ext|
                      rescue ThreadError; end
 
       while img_src_path
-        image = MiniMagick::Image.open(img_src_path)
-        image.resize(new_size)
         img_bname = File.basename(img_src_path, File.extname(img_src_path))
         img_dest_path = File.join(File.dirname(img_src_path),
                                   "#{img_bname}_thumb.#{ext}")
-        image.write(img_dest_path)
+        unless File.exist?(img_dest_path)
+          image = MiniMagick::Image.open(img_src_path)
+          image.resize(new_size)
+          image.write(img_dest_path)
+        end
 
         img_src_path = begin
                          queue.pop(true)
