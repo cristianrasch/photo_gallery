@@ -8,11 +8,12 @@ class Picture
 
   class << self
     def folders
-      @folders ||= Set.new(PUBLIC_DIR.expand_path.children.
+      @folders ||= SortedSet.new(PUBLIC_DIR.expand_path.children.
                                                   select(&:directory?).
                                                   map { |path|
                                                     path.basename.to_s
-                                                  })
+                                                  }.
+                                                  sort)
     end
 
     def from_folder(folder)
