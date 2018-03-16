@@ -20,8 +20,8 @@ class App < Roda
   plugin :content_for
 
   configure :development do
-    plugin :static, Picture.folders.map { |folder| "/#{folder}/" },
-                    root: Picture::PUBLIC_DIR
+    plugin :static, ["/#{Picture::PUBLIC_DIR.basename}"],
+                    root: Picture::PUBLIC_DIR.parent
     plugin :static, %w(/img), root: "assets"
   end
 

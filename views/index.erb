@@ -1,8 +1,8 @@
 <div class="row">
-  <div class="col-4 offset-4">
-    <div class="list-group">
+  <div class="col-8 offset-2 col-sm-4 offset-sm-4">
+    <div class="list-group text-center">
       <% folders.zip(%w(primary secondary success danger warning info light dark).cycle).each do |(folder, css_class)| %>
-        <a href="<%= folder_path(folder) %>" class="list-group-item list-group-item-action list-group-item-<%= css_class %>">
+        <a href="<%= folder_path(folder) %>" class="list-group-item list-group-item-action list-group-item-<%= css_class %> folder">
           <%= folder %>
         </a>
       <% end %>

@@ -5,11 +5,11 @@ require "mini_magick"
 require_relative "../lib/picture"
 
 THREADS = 4
-public_dir = File.expand_path(ARGV[0] || Picture::PUBLIC_DIR)
+public_dir = Pathname(ARGV[0] || Picture::PUBLIC_DIR).expand_path
 new_size = ARGV[1] || "400x400>"
 
 Picture::EXTENSIONS.each do |ext|
-  glob_prefix = File.join(public_dir, "**")
+  glob_prefix = public_dir.join("**")
   FileUtils.rm_f(Dir[File.join(glob_prefix, "*_thumb.#{ext}")])
 
   queue = Dir[File.join(glob_prefix, "*.#{ext}")].inject(Queue.new) { |q, path|
