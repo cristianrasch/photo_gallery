@@ -1,4 +1,5 @@
 require "roda"
+require "tilt/erubis"
 require_relative "config/initializers/dotenv"
 require_relative "lib/picture"
 
