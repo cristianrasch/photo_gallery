@@ -18,6 +18,7 @@ GEM
       capistrano (~> 3.7)
       capistrano-bundler
       puma (~> 3.4)
+    chronic (0.10.2)
     concurrent-ruby (1.0.5)
     dotenv (2.2.1)
     erubis (2.7.0)
@@ -47,6 +48,8 @@ GEM
       net-scp (>= 1.1.2)
       net-ssh (>= 2.8.0)
     tilt (2.0.8)
+    whenever (0.10.0)
+      chronic (>= 0.6.3)
     yui-compressor (0.12.0)
 
 PLATFORMS
@@ -65,6 +68,7 @@ DEPENDENCIES
   rerun
   roda
   tilt
+  whenever
   yui-compressor
 
 BUNDLED WITH

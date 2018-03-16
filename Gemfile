@@ -11,6 +11,7 @@ gem "dotenv"
 gem "mini_magick"
 gem "puma"
 gem "rake"
+gem "whenever", require: false
 
 group :development do
   gem "rerun"
