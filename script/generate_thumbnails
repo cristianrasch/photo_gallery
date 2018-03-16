@@ -1,18 +1,41 @@
 #!/usr/bin/env ruby
 
+require "optparse"
+require "fileutils"
 require "mini_magick"
 require_relative "../lib/picture"
 
 THREADS = 4
-public_dir = Pathname(ARGV[0] || Picture::PUBLIC_DIR).expand_path
-new_size = ARGV[1] || "400x400>"
+DEF_SIZE = -"400x400>"
+
+options = {}
+OptionParser.new do |opts|
+  opts.banner = "Usage: #{File.join(__dir__, __FILE__)} [options]"
+
+  opts.on("-pDIR", "--public-dir=DIR", "Pictures public directory") do |pub_dir|
+    options[:public_dir] = pub_dir
+  end
+
+  opts.on("-rSIZE", "--resize=SIZE", "Thumbnails size (default #{DEF_SIZE})") do |size|
+    options[:thumb_size] = size
+  end
+
+  opts.on("-f", "--force", "Override existing thumbnails") do |f|
+    options[:force] = f
+  end
+end.parse!
+
+public_dir = Pathname(options.fetch(:public_dir, Picture::PUBLIC_DIR)).expand_path
+new_size = options.fetch(:thumb_size, DEF_SIZE)
 
 Picture::EXTENSIONS.each do |ext|
   glob_prefix = public_dir.join("**")
+  if options[:force]
+    FileUtils.rm_f(Dir[glob_prefix.join("*_thumb.#{ext}")])
+  end
 
-  queue = Dir[File.join(glob_prefix, "*.#{ext}")].inject(Queue.new) { |q, path|
-            q << path
-          }
+  pic_paths = Dir[glob_prefix.join("*.#{ext}")].reject { |path| path =~ /_thumb[.]#{ext}\z/ }
+  queue = pic_paths.inject(Queue.new) { |q, path| q << path }
 
   (1..[queue.size, THREADS].min).map {
     Thread.new do
@@ -24,7 +47,7 @@ Picture::EXTENSIONS.each do |ext|
         img_bname = File.basename(img_src_path, File.extname(img_src_path))
         img_dest_path = File.join(File.dirname(img_src_path),
                                   "#{img_bname}_thumb.#{ext}")
-        unless File.exist?(img_dest_path)
+        if options[:force] || !File.exist?(img_dest_path)
           image = MiniMagick::Image.open(img_src_path)
           image.resize(new_size)
           image.write(img_dest_path)
