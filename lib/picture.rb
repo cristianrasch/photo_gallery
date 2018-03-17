@@ -4,6 +4,8 @@ require_relative "../config/initializers/dotenv"
 
 class Picture
   PUBLIC_DIR = Pathname(ENV.fetch("PUBLIC_DIR"))
+  WEB_SUBDIR = -"web"
+  THUMB_SUBDIR = -"thumb"
   EXTENSIONS = ENV.fetch("PHOTO_EXT").split(",").freeze
 
   class << self
@@ -19,9 +21,9 @@ class Picture
     def from_folder(folder)
       return [] unless folders.include?(folder)
 
-      exts = EXTENSIONS.map { |ext| File.join(folder, "*.#{ext}") }
-      Dir[*exts, base: PUBLIC_DIR.expand_path].reject { |pic_path| pic_path =~ /_thumb[.]/ }.
-                                               map { |pic_path| new("/#{PUBLIC_DIR.basename.join(pic_path)}") }
+      exts = EXTENSIONS.map { |ext| File.join(folder, WEB_SUBDIR, "*.#{ext}") }
+      Dir[*exts, base: PUBLIC_DIR.expand_path].
+        map { |pic_path| new("/#{PUBLIC_DIR.basename.join(pic_path)}") }
     end
   end
 
@@ -33,7 +35,6 @@ class Picture
 
   def thumb_fname
     dir, file = path.split
-    ext = file.extname
-    dir.join("#{file.basename(ext)}_thumb#{ext}")
+    dir.sub(WEB_SUBDIR, THUMB_SUBDIR).join(file)
   end
 end
