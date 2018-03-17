@@ -26,8 +26,8 @@ class App < Roda
   end
 
   configure :production do
-    use Rack::Auth::Basic, "Restricted Area" do |username, password|
-      username == ENV["USR"] && password == ENV["PASSWD"]
+    use Rack::Auth::Basic, "Restricted Area" do |_, password|
+      password == ENV["PASSWD"]
     end
   end
 
