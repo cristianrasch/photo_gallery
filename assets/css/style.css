@@ -321,12 +321,13 @@ img {
 }
 
 .lightboxgallery-gallery-item img {
-  width: 100%;
+  /*width: 100%;*/
 }
 
 .lightboxgallery-gallery-item > div {
   position: relative;
   margin: 10px;
+  text-align: center;
 }
 
 .lightboxgallery-gallery-item > div:after {

@@ -3,27 +3,32 @@ require "set"
 require_relative "../config/initializers/dotenv"
 
 class Picture
-  PUBLIC_DIR = Pathname(ENV.fetch("PUBLIC_DIR"))
+  DIR = Pathname(ENV.fetch("PICS_DIR"))
   WEB_SUBDIR = -"web"
   THUMB_SUBDIR = -"thumb"
   EXTENSIONS = ENV.fetch("PHOTO_EXT").split(",").freeze
 
   class << self
     def folders
-      @folders ||= SortedSet.new(PUBLIC_DIR.expand_path.children.
-                                                  select(&:directory?).
-                                                  map { |path|
-                                                    path.basename.to_s
-                                                  }.
-                                                  sort)
+      @folders ||= SortedSet.new(DIR.expand_path.children.
+                                     select { |folder|
+                                       folder.directory? &&
+                                         folder.children.any? { |c|
+                                           EXTENSIONS.any? { |ext| c.extname.end_with?(ext) }
+                                         }
+                                     }.
+                                     map { |path|
+                                       path.basename.to_s
+                                     }.
+                                     sort)
     end
 
     def from_folder(folder)
       return [] unless folders.include?(folder)
 
       exts = EXTENSIONS.map { |ext| File.join(folder, WEB_SUBDIR, "*.#{ext}") }
-      Dir[*exts, base: PUBLIC_DIR.expand_path].
-        map { |pic_path| new("/#{PUBLIC_DIR.basename.join(pic_path)}") }
+      Dir[*exts, base: DIR.expand_path].
+        map { |pic_path| new("/#{DIR.basename.join(pic_path)}") }
     end
   end
 

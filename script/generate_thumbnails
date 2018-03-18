@@ -7,7 +7,8 @@ require "fileutils"
 require "mini_magick"
 require_relative "../lib/picture"
 
-DEF_SIZE = -"400x400>"
+DEF_WEB_SIZE = -"1024x768"
+DEF_THUMB_SIZE = -"x225"
 SUB_DIRS = [Picture::WEB_SUBDIR, Picture::THUMB_SUBDIR].freeze
 IMG_QUALITY = 80
 THREADS = 4
@@ -20,7 +21,11 @@ OptionParser.new do |opts|
     options[:pic_dir] = dir
   end
 
-  opts.on("-s", "--thumb-size=SIZE", "Thumbnails size (default #{DEF_SIZE})") do |size|
+  opts.on("-w", "--web-size=SIZE", "Web size (default #{DEF_WEB_SIZE})") do |size|
+    options[:web_size] = size
+  end
+
+  opts.on("-t", "--thumb-size=SIZE", "Thumbnails size (default #{DEF_THUMB_SIZE})") do |size|
     options[:thumb_size] = size
   end
 
@@ -29,24 +34,24 @@ OptionParser.new do |opts|
   end
 end.parse!
 
-public_dir = Pathname(options.fetch(:pic_dir, Picture::PUBLIC_DIR)).expand_path
-public_dir.children.select(&:directory?).each do |folder|
+pics_dir = Pathname(options.fetch(:pic_dir, Picture::DIR)).expand_path
+pics_dir.children.select(&:directory?).each do |folder|
   SUB_DIRS.each do |sub_dir|
     folder.join(sub_dir).mkpath
   end
 end
 
-thumb_size = options.fetch(:thumb_size, DEF_SIZE)
-thumb_size << -">" unless thumb_size.end_with?(-">")
+web_size = options.fetch(:web_size, DEF_WEB_SIZE)
+thumb_size = options.fetch(:thumb_size, DEF_THUMB_SIZE)
 
 Picture::EXTENSIONS.each do |ext|
   if options[:force]
     SUB_DIRS.each do |sub_dir|
-      FileUtils.rm_f(Dir[public_dir.join("*", sub_dir, "*.#{ext}")])
+      FileUtils.rm_f(Dir[pics_dir.join("*", sub_dir, "*.#{ext}")])
     end
   end
 
-  pic_paths = Dir[public_dir.join("*", "*.#{ext}")]
+  pic_paths = Dir[pics_dir.join("*", "*.#{ext}")]
   queue = pic_paths.inject(Queue.new) { |q, path| q << Pathname(path) }
 
   (1..[queue.size, THREADS].min).map {
@@ -61,7 +66,11 @@ Picture::EXTENSIONS.each do |ext|
         img_web_path = img_src_path.dirname.join(Picture::WEB_SUBDIR, img_bname)
         if options[:force] || !File.exist?(img_web_path)
           image = MiniMagick::Image.open(img_src_path)
-          image.quality(IMG_QUALITY)
+          image.combine_options do |c|
+            c.auto_orient
+            c.thumbnail(web_size)
+            c.quality(IMG_QUALITY)
+          end
           image.write(img_web_path)
         end
 
@@ -69,6 +78,7 @@ Picture::EXTENSIONS.each do |ext|
         if options[:force] || !File.exist?(img_thumb_path)
           image = MiniMagick::Image.open(img_src_path)
           image.combine_options do |c|
+            c.auto_orient
             c.thumbnail(thumb_size)
             c.quality(IMG_QUALITY)
           end
