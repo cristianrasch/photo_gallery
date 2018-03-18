@@ -28,6 +28,10 @@ class Picture
 
       exts = EXTENSIONS.map { |ext| File.join(folder, WEB_SUBDIR, "*.#{ext}") }
       Dir[*exts, base: DIR.expand_path].
+        sort_by { |pic_path|
+          f = DIR.join(pic_path).expand_path
+          [f.mtime, f.basename]
+        }.
         map { |pic_path| new("/#{DIR.basename.join(pic_path)}") }
     end
   end
