@@ -29,6 +29,10 @@ OptionParser.new do |opts|
     options[:thumb_size] = size
   end
 
+  opts.on("-c", "--concurrency=THREADS", "How many threads to use to resize images (default #{THREADS})") do |threads|
+    options[:concurrency] = threads
+  end
+
   opts.on("-f", "--force", "Override existing thumbnails") do |f|
     options[:force] = f
   end
@@ -48,6 +52,7 @@ web_size, thumb_size = { web_size: DEF_WEB_SIZE,
     size << ">" unless size.end_with?(">")
   end
 }
+max_threads = options.fetch(:concurrency, THREADS)
 
 Picture::EXTENSIONS.each do |ext|
   if options[:force]
@@ -59,7 +64,7 @@ Picture::EXTENSIONS.each do |ext|
   pic_paths = Dir[pics_dir.join("*", "*.#{ext}")]
   queue = pic_paths.inject(Queue.new) { |q, path| q << Pathname(path) }
 
-  (1..[queue.size, THREADS].min).map {
+  (1..[queue.size, max_threads].min).map {
     Thread.new do
       img_src_path = begin
                        queue.pop(true)
