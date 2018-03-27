@@ -6,15 +6,14 @@
   </div>
 </div>
 
-<div class="lightboxgallery-gallery clearfix">
+<div id="gallery" style="display:none;">
   <% pictures.each do |picture| %>
-    <a class="lightboxgallery-gallery-item" target="_blank" href="<%= picture.path %>" data-title="" data-alt="" data-desc="">
-      <div>
-        <img src="<%= picture.thumb_fname %>" title="" alt="">
-        <div class="lightboxgallery-gallery-item-content">
-          <span class="lightboxgallery-gallery-item-title"></span>
-        </div>
-      </div>
+    <a href="#">
+      <img alt=""
+          src="<%= picture.thumb_fname %>"
+          data-image="<%= picture.path %>"
+          data-description=""
+          style="display:none">
     </a>
   <% end %>
 </div>
@@ -30,14 +29,6 @@
 
 <% content_for :js do %>
   <script type="text/javascript">
-    $(document).on('click', '.lightboxgallery-gallery-item', function(event) {
-      event.preventDefault();
-
-      $(this).lightboxgallery({
-        showCounter: true,
-        showTitle: false,
-        showDescription: false
-      });
-    });
+    $("#gallery").unitegallery();
   </script>
 <% end %>

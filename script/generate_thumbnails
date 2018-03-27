@@ -7,8 +7,8 @@ require "fileutils"
 require "mini_magick"
 require_relative "../lib/picture"
 
-DEF_WEB_SIZE = -"1024x768"
-DEF_THUMB_SIZE = -"x225"
+DEF_WEB_SIZE = -"1360x768>"
+DEF_THUMB_SIZE = -"300x300>"
 SUB_DIRS = [Picture::WEB_SUBDIR, Picture::THUMB_SUBDIR].freeze
 IMG_QUALITY = 80
 THREADS = 4
@@ -41,8 +41,13 @@ pics_dir.children.select(&:directory?).each do |folder|
   end
 end
 
-web_size = options.fetch(:web_size, DEF_WEB_SIZE)
-thumb_size = options.fetch(:thumb_size, DEF_THUMB_SIZE)
+web_size, thumb_size = { web_size: DEF_WEB_SIZE,
+                         thumb_size: DEF_THUMB_SIZE }.
+                         map { |k, def_size|
+  options.fetch(k, def_size).tap do |size|
+    size << ">" unless size.end_with?(">")
+  end
+}
 
 Picture::EXTENSIONS.each do |ext|
   if options[:force]
