@@ -30,7 +30,7 @@ OptionParser.new do |opts|
   end
 
   opts.on("-c", "--concurrency=THREADS", "How many threads to use to resize images (default #{THREADS})") do |threads|
-    options[:concurrency] = threads
+    options[:concurrency] = Integer(threads)
   end
 
   opts.on("-f", "--force", "Override existing thumbnails") do |f|
