@@ -12,27 +12,27 @@ class Picture
   class << self
     def folders
       @folders ||= Set.new(DIR.expand_path.children.
-                                     select { |folder|
-                                       folder.directory? &&
-                                         folder.children.any? { |c|
-                                           EXTENSIONS.any? { |ext| c.extname.end_with?(ext) }
-                                         }
-                                     }.
-                                     map { |path|
-                                       path.basename.to_s
-                                     }.
-                                     sort { |d1, d2|
-                                       dt1 = parse_date(d1)
-                                       dt2 = parse_date(d2)
+                                           select { |folder|
+                                             folder.directory? &&
+                                               folder.children.any? { |c|
+                                                 EXTENSIONS.any? { |ext| c.extname.end_with?(ext) }
+                                               }
+                                           }.
+                                           map { |path|
+                                             path.basename.to_s
+                                           }.
+                                           sort { |d1, d2|
+                                             dt1 = parse_date(d1)
+                                             dt2 = parse_date(d2)
 
-                                       if dt1 && dt2
-                                         dt1 <=> dt2
-                                       elsif dt1.nil?
-                                         -1
-                                       else
-                                         1
-                                       end
-                                     }.reverse)
+                                             if dt1 && dt2
+                                               dt1 <=> dt2
+                                             elsif dt1.nil?
+                                               -1
+                                             else
+                                               1
+                                             end
+                                           }.reverse)
     end
 
     def from_folder(folder)
