@@ -1,5 +1,6 @@
 require "pathname"
 require "set"
+require "date"
 require_relative "../config/initializers/dotenv"
 
 class Picture
@@ -10,7 +11,7 @@ class Picture
 
   class << self
     def folders
-      @folders ||= SortedSet.new(DIR.expand_path.children.
+      @folders ||= Set.new(DIR.expand_path.children.
                                      select { |folder|
                                        folder.directory? &&
                                          folder.children.any? { |c|
@@ -20,7 +21,18 @@ class Picture
                                      map { |path|
                                        path.basename.to_s
                                      }.
-                                     sort)
+                                     sort { |d1, d2|
+                                       dt1 = parse_date(d1)
+                                       dt2 = parse_date(d2)
+
+                                       if dt1 && dt2
+                                         dt1 <=> dt2
+                                       elsif dt1.nil?
+                                         -1
+                                       else
+                                         1
+                                       end
+                                     }.reverse)
     end
 
     def from_folder(folder)
@@ -33,6 +45,14 @@ class Picture
           [f.mtime, f.basename]
         }.
         map { |pic_path| new("/#{DIR.basename.join(pic_path)}") }
+    end
+
+    private
+
+    def parse_date(dt)
+      begin
+        Date.strptime(dt, -"%B_%Y")
+      rescue ArgumentError; end
     end
   end
 

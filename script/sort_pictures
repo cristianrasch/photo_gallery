@@ -1,0 +1,53 @@
+#!/usr/bin/env ruby
+
+require "rubygems"
+require "bundler/setup"
+require "date"
+require "optparse"
+require "fileutils"
+require_relative "../lib/picture"
+
+MONTHS = (1..12).map { |mo| /\A#{Date.new(2018, mo).strftime("%B")}_\d{4}/ }
+DT_RE = /\D?(20\d{6})\D/
+UNSORTED_DIR = -"Unsorted"
+
+options = {}
+OptionParser.new do |opts|
+  opts.banner = "Usage: #{File.join(__dir__, __FILE__)} [options]"
+
+  opts.on("-d", "--directory=DIRECTORY", "Pictures directory") do |dir|
+    options[:pic_dir] = dir
+  end
+
+  opts.on("-f", "--force", "Override existing thumbnails") do |f|
+    options[:force] = f
+  end
+end.parse!
+
+pics_dir = Pathname(options.fetch(:pic_dir, Picture::DIR)).expand_path
+
+Picture.folders.each do |folder|
+  next if folder == UNSORTED_DIR
+  next if MONTHS.any? { |mo_folder| folder =~ mo_folder }
+
+  Picture::EXTENSIONS.each do |ext|
+    glob_pattern = pics_dir.join(folder).join("*.#{ext}")
+    timestamped_imgs, non_timestamped_imgs = Dir[glob_pattern].partition { |img_path|
+                                                                 img_path =~ DT_RE
+                                                               }
+    unsorted_dir = pics_dir.join(UNSORTED_DIR)
+    unsorted_dir.mkdir unless unsorted_dir.exist?
+    FileUtils.mv(non_timestamped_imgs, unsorted_dir, force: options[:force])
+
+    imgs_by_subdir = timestamped_imgs.group_by { |img_path|
+                       md = img_path.match(DT_RE)
+                       Date.strptime(md.captures.first, -"%Y%m%d").
+                            strftime("%B_%Y")
+                     }
+    imgs_by_subdir.each do |subdir, imgs|
+      dt_folder = pics_dir.join(subdir)
+      dt_folder.mkdir unless dt_folder.exist?
+      FileUtils.mv(imgs, dt_folder, force: options[:force])
+    end
+  end
+end
