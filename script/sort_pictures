@@ -36,7 +36,10 @@ Picture.folders.each do |folder|
                                                                  img_path =~ DT_RE
                                                                }
     unsorted_dir = pics_dir.join(UNSORTED_DIR)
-    unsorted_dir.mkdir unless unsorted_dir.exist?
+    unless unsorted_dir.exist?
+      unsorted_dir.mkdir
+      unsorted_dir.chmod(0775)
+    end
     FileUtils.mv(non_timestamped_imgs, unsorted_dir, force: options[:force])
 
     imgs_by_subdir = timestamped_imgs.group_by { |img_path|
