@@ -10,6 +10,7 @@ require_relative "../lib/picture"
 MONTHS = (1..12).map { |mo| /\A#{Date.new(2018, mo).strftime("%B")}_\d{4}/ }
 DT_RE = /\D?(20\d{6})\D/
 UNSORTED_DIR = -"Unsorted"
+DIR_PERMISSIONS = 0775
 
 options = {}
 OptionParser.new do |opts|
@@ -38,7 +39,7 @@ Picture.folders.each do |folder|
     unsorted_dir = pics_dir.join(UNSORTED_DIR)
     unless unsorted_dir.exist?
       unsorted_dir.mkdir
-      unsorted_dir.chmod(0775)
+      unsorted_dir.chmod(DIR_PERMISSIONS)
     end
     FileUtils.mv(non_timestamped_imgs, unsorted_dir, force: options[:force])
 
@@ -49,7 +50,10 @@ Picture.folders.each do |folder|
                      }
     imgs_by_subdir.each do |subdir, imgs|
       dt_folder = pics_dir.join(subdir)
-      dt_folder.mkdir unless dt_folder.exist?
+      unless dt_folder.exist?
+        dt_folder.mkdir
+        dt_folder.chmod(DIR_PERMISSIONS)
+      end
       FileUtils.mv(imgs, dt_folder, force: options[:force])
     end
   end
