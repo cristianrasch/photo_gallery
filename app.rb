@@ -12,8 +12,9 @@ class App < Roda
   end
   plugin :render
   opts[:public] = "public/system"
-  plugin :assets, css: %w(style.css unite-gallery.css),
-                  js: %w(jquery-11.0.min.js unitegallery.js ug-theme-tiles.js),
+  plugin :assets, css: %w(bootstrap.css style.css unite-gallery.css),
+                  js: %w(jquery.js popper.js bootstrap.js unitegallery.js ug-theme-tiles.js),
+                  js_compressor: :closure,
                   public: opts[:public],
                   precompiled: File.join(opts[:public], "assets.json"),
                   gzip: true
