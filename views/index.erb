@@ -1,9 +1,23 @@
 <div class="row">
-  <div class="col-10 offset-1 col-sm-8 offset-sm-2">
+  <div class="col-2">
+    <aside>
+      <ul class="nav flex-column nav-pills">
+        <% this_year = request.current_year %>
+        <% folders_by_year = group_folders_by_year(folders) %>
+        <% folders_by_year.each do |year, _| %>
+          <li class="nav-item">
+            <a class="nav-link <%= 'active' if year == this_year %>" href="<%= year == this_year ? '#' : "#{root_path}?year=#{year}" %>"><%= year %></a>
+          </li>
+        <% end %>
+      </ul>
+    </aside>
+  </div>
+  <div class="col-8 offset-1">
     <div class="list-group text-center">
-      <% folders.zip(%w(primary secondary success danger warning info light dark).cycle).each do |(folder, css_class)| %>
+      <% folders_by_year[this_year].map { |dt| format_date(dt, format: :folder) }.zip(%w(primary secondary success danger warning info light dark).cycle).each do |(folder, css_class)| %>
         <a href="<%= folder_path(folder) %>" class="list-group-item list-group-item-action list-group-item-<%= css_class %> folder">
-          <%= folder %>
+          <% dt = parse_date(folder) %>
+          <%= dt ? format_date(dt) : folder %>
         </a>
       <% end %>
     </div>

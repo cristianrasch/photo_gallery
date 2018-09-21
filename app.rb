@@ -2,6 +2,7 @@ require "roda"
 require "tilt/erubis"
 require_relative "config/initializers/dotenv"
 require_relative "lib/picture"
+Dir["helpers/*.rb"].each { |helper| require_relative helper }
 
 class App < Roda
   plugin :environments
@@ -40,7 +41,8 @@ class App < Roda
       end
 
       r.root do
-        view "index", locals: { folders: Picture.folders }
+        folders = Picture.folders
+        view "index", locals: { folders: folders }
       end
     end
   end

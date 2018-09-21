@@ -1,6 +1,6 @@
 <div class="row">
   <div class="col-12">
-    <a href="<%= root_path %>" class="btn btn-secondary btn-lg btn-block">
+    <a href="<%= request.referer || root_path %>" class="btn btn-secondary btn-lg btn-block">
       <i class="fa fa-long-arrow-alt-left"></i> Back
     </a>
   </div>
@@ -20,7 +20,7 @@
 
 <div class="row">
   <div class="col-12">
-    <a href="<%= root_path %>" class="btn btn-secondary btn-lg btn-block">
+    <a href="<%= request.referer ||root_path %>" class="btn btn-secondary btn-lg btn-block">
       <i class="fa fa-long-arrow-alt-left"></i> Back
     </a>
   </div>

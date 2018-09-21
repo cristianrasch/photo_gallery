@@ -12,6 +12,7 @@ gem "mini_magick"
 gem "puma"
 gem "rake"
 gem "whenever", require: false
+gem "tzinfo"
 
 group :development do
   gem "rerun"

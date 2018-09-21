@@ -2,6 +2,7 @@ require "pathname"
 require "set"
 require "date"
 require_relative "../config/initializers/dotenv"
+require_relative "../helpers/date_helper"
 
 class Picture
   DIR = Pathname(ENV.fetch("PICS_DIR"))
@@ -10,6 +11,8 @@ class Picture
   EXTENSIONS = ENV.fetch("PHOTO_EXT").split(",").freeze
 
   class << self
+    include DateHelper::InstanceMethods
+
     def folders
       @folders ||= Set.new(DIR.expand_path.children.
                                            select { |folder|
@@ -45,14 +48,6 @@ class Picture
           [f.mtime, f.basename]
         }.
         map { |pic_path| new("/#{DIR.basename.join(pic_path)}") }
-    end
-
-    private
-
-    def parse_date(dt)
-      begin
-        Date.strptime(dt, -"%B_%Y")
-      rescue ArgumentError; end
     end
   end
 
