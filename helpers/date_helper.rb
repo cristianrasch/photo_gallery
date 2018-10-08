@@ -43,4 +43,4 @@ module DateHelper
   end
 end
 
-Roda.plugin(DateHelper)
+Roda.plugin(DateHelper) if defined?(Roda)
