@@ -34,10 +34,13 @@ module DateHelper
   module RequestMethods
     include InstanceMethods
 
-    def current_year
-      @current_year ||= begin
-                          yr = self["year"]
-                          yr ? Integer(yr) : today.year
+    def current_year(years = [])
+      @current_year ||= if yr = self["year"]
+                          Integer(yr)
+                        elsif years.empty?
+                          today.year
+                        else
+                          Integer(years.max)
                         end
     end
   end

@@ -2,8 +2,8 @@
   <div class="col-2">
     <aside>
       <ul class="nav flex-column nav-pills">
-        <% this_year = request.current_year %>
         <% folders_by_year = group_folders_by_year(folders) %>
+        <% this_year = request.current_year(folders_by_year.keys) %>
         <% folders_by_year.each do |year, _| %>
           <li class="nav-item">
             <a class="nav-link <%= 'active' if year == this_year %>" href="<%= year == this_year ? '#' : "#{root_path}?year=#{year}" %>"><%= year %></a>
