@@ -2,7 +2,6 @@ require "roda"
 require "tilt/erubis"
 require_relative "config/initializers/dotenv"
 require_relative "lib/picture"
-Dir["helpers/*.rb"].each { |helper| require_relative helper }
 
 class App < Roda
   plugin :environments
@@ -37,7 +36,7 @@ class App < Roda
 
     r.get do
       r.is String do |folder|
-        view "folders/show", locals: { pictures: Picture.from_folder(folder) }
+        view "show", locals: { pictures: Picture.from_folder(folder) }
       end
 
       r.root do
@@ -46,4 +45,12 @@ class App < Roda
       end
     end
   end
+
+  def group_folders_by_year(folders)
+    @folders_by_year ||= folders.map { |folder| Picture.parse_date(folder) }.
+                                 reject { |dt, _| !dt }.
+                                 group_by(&:year)
+  end
+
+  Dir["helpers/*.rb"].each { |helper| require_relative helper }
 end
