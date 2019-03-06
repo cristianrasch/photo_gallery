@@ -17,9 +17,11 @@ class Picture
       @folders ||= Set.new(DIR.expand_path.children.
                                            select { |folder|
                                              folder.directory? &&
-                                               folder.children.any? { |c|
-                                                 EXTENSIONS.any? { |ext| c.extname.end_with?(ext) }
-                                               }
+                                             [WEB_SUBDIR, THUMB_SUBDIR].all? { |sub_dir|
+                                               EXTENSIONS.any? { |ext| !folder.join(sub_dir).
+                                                                               glob("*.#{ext}").
+                                                                               empty? }
+                                             }
                                            }.
                                            map { |path|
                                              path.basename.to_s
