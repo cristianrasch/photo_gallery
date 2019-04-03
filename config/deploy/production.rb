@@ -1,6 +1,8 @@
 set :default_env, { rack_env: fetch(:stage) }
 
-server "www.jaylen.com.ar", user: "cristian", roles: %w{app}
+srv = ENV.fetch("REMOTE_SRV", "www.jaylen.com.ar")
+usr = ENV.fetch("REMOTE_USR", "cristian")
+server srv, user: usr, roles: %w{app}
 
 set :ssh_options, {
    port: 22,
