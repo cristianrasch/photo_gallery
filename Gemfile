@@ -22,6 +22,11 @@ group :development do
   gem "capistrano3-puma"
 end
 
+group :test do
+  gem "minitest"
+  gem "rack-test"
+end
+
 group :production do
   gem "yuicompressor"
   gem "closure-compiler"

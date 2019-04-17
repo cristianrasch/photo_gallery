@@ -30,11 +30,14 @@ GEM
       rb-inotify (~> 0.9, >= 0.9.7)
       ruby_dep (~> 1.2)
     mini_magick (4.9.3)
+    minitest (5.11.3)
     net-scp (1.2.1)
       net-ssh (>= 2.6.5)
     net-ssh (5.2.0)
     puma (3.12.0)
     rack (2.0.6)
+    rack-test (1.1.0)
+      rack (>= 1.0, < 3)
     rake (12.3.2)
     rb-fsevent (0.10.3)
     rb-inotify (0.10.0)
@@ -66,7 +69,9 @@ DEPENDENCIES
   dotenv
   erubis
   mini_magick
+  minitest
   puma
+  rack-test
   rake
   rerun
   roda
