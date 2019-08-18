@@ -13,31 +13,33 @@ class Picture
   class << self
     include DateHelper::InstanceMethods
 
-    def folders
-      @folders ||= Set.new(DIR.expand_path.children.
-                                           select { |folder|
-                                             folder.directory? &&
-                                             [WEB_SUBDIR, THUMB_SUBDIR].all? { |sub_dir|
-                                               EXTENSIONS.any? { |ext| !folder.join(sub_dir).
-                                                                               glob("*.#{ext}").
-                                                                               empty? }
-                                             }
-                                           }.
-                                           map { |path|
-                                             path.basename.to_s
-                                           }.
-                                           sort { |d1, d2|
-                                             dt1 = parse_date(d1)
-                                             dt2 = parse_date(d2)
+    def folders(skip_missing_web_thumb_dirs: false)
+      Set.new(DIR.expand_path.children.
+                              tap do |dirs|
+                                dirs.select! { |folder|
+                                  folder.directory? &&
+                                    [WEB_SUBDIR, THUMB_SUBDIR].all? { |sub_dir|
+                                      EXTENSIONS.any? { |ext| !folder.join(sub_dir).
+                                                                      glob("*.#{ext}").
+                                                                      empty? }
+                                    }
+                                } unless skip_missing_web_thumb_dirs
+                              end.
+                              map { |path|
+                                path.basename.to_s
+                              }.
+                              sort { |d1, d2|
+                                dt1 = parse_date(d1)
+                                dt2 = parse_date(d2)
 
-                                             if dt1 && dt2
-                                               dt1 <=> dt2
-                                             elsif dt1.nil?
-                                               -1
-                                             else
-                                               1
-                                             end
-                                           }.reverse)
+                                if dt1 && dt2
+                                  dt1 <=> dt2
+                                elsif dt1.nil?
+                                  -1
+                                else
+                                  1
+                                end
+                              }.reverse)
     end
 
     def from_folder(folder)

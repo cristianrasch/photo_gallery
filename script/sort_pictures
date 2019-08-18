@@ -26,7 +26,7 @@ end.parse!
 
 pics_dir = Pathname(options.fetch(:pic_dir, Picture::DIR)).expand_path
 
-Picture.folders.each do |folder|
+Picture.folders(skip_missing_web_thumb_dirs: true).each do |folder|
   next if folder == UNSORTED_DIR
   next if MONTHS.any? { |mo_folder| folder =~ mo_folder }
 
