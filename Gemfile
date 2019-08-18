@@ -9,7 +9,7 @@ gem "tilt"
 gem "erubis"
 gem "dotenv"
 gem "mini_magick"
-gem "puma"
+gem "puma", "~> 3.12"
 gem "rake"
 gem "whenever", require: false
 gem "tzinfo"
