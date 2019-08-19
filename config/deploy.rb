@@ -54,3 +54,11 @@ namespace :deploy do
   end
   after  :publishing, :"assets:precompile"
 end
+
+namespace :puma do
+  task :restart do
+    on roles(:app) do
+      execute "kill -SIGUSR2 `cat #{fetch(:deploy_to)}/shared/tmp/pids/puma.pid`"
+    end
+  end
+end

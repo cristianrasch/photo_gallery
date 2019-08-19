@@ -20,7 +20,7 @@ install_plugin Capistrano::SCM::Git
 require "capistrano/rbenv"
 require "capistrano/bundler"
 require "capistrano/puma"
-install_plugin Capistrano::Puma
+install_plugin Capistrano::Puma, load_hooks: false
 require "whenever/capistrano"
 
 # Load custom tasks from `lib/capistrano/tasks` if you have any defined
