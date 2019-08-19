@@ -70,7 +70,7 @@ DEPENDENCIES
   erubis
   mini_magick
   minitest
-  puma (~> 3.12)
+  puma
   rack-test
   rake
   rerun

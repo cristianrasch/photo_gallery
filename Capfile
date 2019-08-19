@@ -21,7 +21,6 @@ require "capistrano/rbenv"
 require "capistrano/bundler"
 require "capistrano/puma"
 install_plugin Capistrano::Puma
-install_plugin Capistrano::Puma::Monit
 require "whenever/capistrano"
 
 # Load custom tasks from `lib/capistrano/tasks` if you have any defined
