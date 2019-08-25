@@ -55,10 +55,10 @@ namespace :deploy do
   after  :publishing, :"assets:precompile"
 end
 
-namespace :puma do
+namespace :app do
   task :restart do
-    on roles(:app) do
-      execute "kill -SIGUSR2 `cat #{fetch(:deploy_to)}/shared/tmp/pids/puma.pid`"
+    on roles(fetch(:puma_role)) do
+      execute :sudo, "systemctl restart #{fetch(:application)}"
     end
   end
 end
