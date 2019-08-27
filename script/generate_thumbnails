@@ -15,7 +15,7 @@ THREADS = 4
 
 options = {}
 OptionParser.new do |opts|
-  opts.banner = "Usage: #{File.join(__dir__, __FILE__)} [options]"
+  opts.banner = "Usage: #{__FILE__} [options]"
 
   opts.on("-d", "--directory=DIRECTORY", "Pictures directory") do |dir|
     options[:pic_dir] = dir
