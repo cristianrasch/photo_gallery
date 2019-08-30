@@ -52,7 +52,7 @@ namespace :deploy do
       end
     end
   end
-  after  :publishing, :"assets:precompile"
+  after "publishing", "assets:precompile"
 end
 
 namespace :app do
@@ -62,3 +62,4 @@ namespace :app do
     end
   end
 end
+after "deploy:finished", "app:restart"
