@@ -1,6 +1,15 @@
 #!/usr/bin/env ruby
 
-require "bundler/setup"
+require "bundler/inline"
+
+gemfile do
+  source "https://rubygems.org"
+  gem "dotenv"
+  gem "mini_magick"
+  gem "tzinfo"
+end
+
+# require "bundler/setup"
 require "optparse"
 require "fileutils"
 require "mini_magick"
@@ -10,7 +19,7 @@ DEF_WEB_SIZE = -"1360x768>"
 DEF_THUMB_SIZE = -"300x300>"
 SHARPENING = -"0x1.0"
 SUB_DIRS = [Picture::WEB_SUBDIR, Picture::THUMB_SUBDIR].freeze
-IMG_QUALITY = 80
+# IMG_QUALITY = 80
 THREADS = 4
 
 options = {}
@@ -78,7 +87,7 @@ Picture::EXTENSIONS.each do |ext|
           image = MiniMagick::Image.open(img_src_path)
           image.combine_options do |c|
             c.auto_orient
-            c.quality(IMG_QUALITY)
+            # c.quality(IMG_QUALITY)
             c.thumbnail(web_size)
             c.sharpen(SHARPENING)
           end
@@ -90,7 +99,7 @@ Picture::EXTENSIONS.each do |ext|
           image = MiniMagick::Image.open(img_src_path)
           image.combine_options do |c|
             c.auto_orient
-            c.quality(IMG_QUALITY)
+            # c.quality(IMG_QUALITY)
             c.thumbnail(thumb_size)
             c.sharpen(SHARPENING)
           end
