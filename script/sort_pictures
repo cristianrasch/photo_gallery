@@ -8,7 +8,7 @@ gemfile do
   gem "tzinfo"
 end
 
-require "bundler/setup"
+# require "bundler/setup"
 require "date"
 require "optparse"
 require "fileutils"
